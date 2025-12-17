@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Stack Plus</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="/styles.css">
+</head>
+  <body>
+    <main class="app">
+      <canvas id="game-canvas" class="game-canvas" aria-label="3D game canvas"></canvas>
+
+      <section class="hud" data-ui="true" aria-live="polite">
+        <div class="hud-left">
+          <div class="pill">
+            <span class="pill-label">Score</span>
+            <span id="score" class="pill-value">0</span>
+          </div>
+          <div class="pill">
+            <span class="pill-label">Best</span>
+            <span id="best" class="pill-value">0</span>
+          </div>
+          <div class="pill pill-star">
+            <span class="pill-label">Stars</span>
+            <span id="stars" class="pill-value">0</span>
+          </div>
+        </div>
+
+        <div class="hud-right">
+          <button id="btn-menu" class="btn btn-secondary" type="button">Menu</button>
+          <button id="btn-sound" class="btn btn-secondary" type="button" aria-pressed="true">
+            Sound: On
+          </button>
+          <button id="btn-restart" class="btn btn-secondary" type="button">Restart</button>
+        </div>
+      </section>
+
+      <div id="combo-toast" class="combo-toast hidden" aria-live="polite"></div>
+
+      <section id="menu-overlay" class="overlay" data-ui="true" role="dialog" aria-modal="true">
+        <div class="card card-menu">
+          <header class="menu-header">
+            <div class="menu-title-wrap">
+              <h1 id="menu-title" class="title">Stack Plus</h1>
+              <p id="menu-subtitle" class="subtitle">Tap to drop. Perfect stacks grow your tower.</p>
+            </div>
+
+            <div class="menu-currency">
+              <div class="pill pill-star">
+                <span class="pill-label">Stars</span>
+                <span id="menu-stars" class="pill-value">0</span>
+              </div>
+            </div>
+          </header>
+
+          <nav class="tabs" role="tablist" aria-label="Menu tabs">
+            <button class="tab-btn active" id="tab-home" type="button" role="tab" aria-selected="true" data-tab="home">Home</button>
+            <button class="tab-btn" id="tab-challenges" type="button" role="tab" aria-selected="false" data-tab="challenges">Challenges</button>
+            <button class="tab-btn" id="tab-skins" type="button" role="tab" aria-selected="false" data-tab="skins">Skins</button>
+            <button class="tab-btn" id="tab-skies" type="button" role="tab" aria-selected="false" data-tab="skies">Skies</button>
+          </nav>
+
+          <section class="menu-content">
+            <div class="panel active" id="panel-home" role="tabpanel" aria-labelledby="tab-home" data-panel="home">
+              <div class="panel-grid">
+                <div class="tile">
+                  <div class="tile-header">
+                    <h2 class="tile-title">Play</h2>
+                    <p class="tile-sub">Drop blocks and build up. Perfect 3 times - grow a bit.</p>
+                  </div>
+                  <div class="tile-body">
+                    <div class="stats">
+                      <div class="stat">
+                        <div class="stat-label">Score</div>
+                        <div id="home-score" class="stat-value">0</div>
+                      </div>
+                      <div class="stat">
+                        <div class="stat-label">Best</div>
+                        <div id="home-best" class="stat-value">0</div>
+                      </div>
+                    </div>
+
+                    <div class="home-buttons">
+                      <button id="btn-play" class="btn btn-primary" type="button">Play</button>
+                      <button id="btn-how" class="btn btn-ghost" type="button">How it works</button>
+                    </div>
+
+                    <div id="how" class="how hidden">
+                      <p><strong>Perfect</strong>: snap placement, keep full size.</p>
+                      <p><strong>Perfect x3</strong>: tower grows a little so you recover size.</p>
+                      <p><strong>Stars</strong>: earned while you play. Spend them on skins and skies.</p>
+                      <p>Controls: tap/click or Space.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tile">
+                  <div class="tile-header">
+                    <h2 class="tile-title">Quick Loadout</h2>
+                    <p class="tile-sub">Your current look.</p>
+                  </div>
+                  <div class="tile-body">
+                    <div class="loadout">
+                      <div class="loadout-row">
+                        <div class="loadout-label">Skin</div>
+                        <div id="current-skin" class="loadout-value">Classic</div>
+                      </div>
+                      <div class="loadout-row">
+                        <div class="loadout-label">Sky</div>
+                        <div id="current-sky" class="loadout-value">Day</div>
+                      </div>
+                    </div>
+
+                    <div class="home-buttons">
+                      <button class="btn btn-secondary" type="button" data-tab-jump="skins">Change Skin</button>
+                      <button class="btn btn-secondary" type="button" data-tab-jump="skies">Change Sky</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel" id="panel-challenges" role="tabpanel" aria-labelledby="tab-challenges" data-panel="challenges">
+              <div class="tile">
+                <div class="tile-header">
+                  <h2 class="tile-title">Daily Challenges</h2>
+                  <p class="tile-sub">Complete them to earn more stars.</p>
+                </div>
+                <div class="tile-body">
+                  <div id="challenge-list" class="challenge-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel" id="panel-skins" role="tabpanel" aria-labelledby="tab-skins" data-panel="skins">
+              <div class="tile">
+                <div class="tile-header">
+                  <h2 class="tile-title">Skins</h2>
+                  <p class="tile-sub">Buy with stars. Equip anytime.</p>
+                </div>
+                <div class="tile-body">
+                  <div id="skins-grid" class="shop-grid"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel" id="panel-skies" role="tabpanel" aria-labelledby="tab-skies" data-panel="skies">
+              <div class="tile">
+                <div class="tile-header">
+                  <h2 class="tile-title">Skies</h2>
+                  <p class="tile-sub">Change the mood. Better fog and lighting.</p>
+                </div>
+                <div class="tile-body">
+                  <div id="skies-grid" class="shop-grid"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer class="menu-footer">
+            <button id="btn-close-menu" class="btn btn-secondary" type="button">Close</button>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module" src="./script.js"></script>
+    <script src="/script.js"></script>
+</body>
+</html>
